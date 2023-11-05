@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import Juego from './Juego';
+import './styles.css';
 import Felicitaciones from './Felicitaciones';
-import './styles.css'; // Importa el archivo CSS
+
 
 function Inicio() {
-    const [playerName, setPlayerName] = useState('');
+    const [playerNames, setPlayerNames] = useState(['Player 1', 'Player 2']);
     const [showGame, setShowGame] = useState(false);
     const [score, setScore] = useState(0);
     const [showCongratulations, setShowCongratulations] = useState(false);
     const [currentRound, setCurrentRound] = useState(1);
 
-    const handlePlayClick = (name) => {
-        setPlayerName(name);
+    const handlePlayClick = (names) => {
+        setPlayerNames(names);
         setShowGame(true);
         setScore(0);
         setShowCongratulations(false);
@@ -23,37 +24,29 @@ function Inicio() {
         setShowCongratulations(true);
     };
 
-    if (!showGame && !showCongratulations) {
+    if (!showGame) {
         return (
             <div>
-                <h1>Enter your child's name  😎👍</h1>
+                <h1>Enter players' names  😎👍</h1>
                 <input
                     type="text"
-                    placeholder="Child's Name"
-                    onChange={(e) => setPlayerName(e.target.value)}
+                    placeholder="Player 1's Name"
+                    onChange={(e) => {
+                        setPlayerNames([e.target.value, playerNames[1]]);
+                    }}
                 />
-                <button onClick={() => handlePlayClick(playerName)}>Play 👈</button>
-            </div>
-        );
-    } else if (showGame) {
-        return (
-            <div>
-                <Juego
-                    playerName={playerName}
-                    score={score}
-                    setScore={setScore}
-                    onFinish={onFinish}
-                    currentRound={currentRound}
-                    setCurrentRound={setCurrentRound}
+                <input
+                    type="text"
+                    placeholder="Player 2's Name"
+                    onChange={(e) => {
+                        setPlayerNames([playerNames[0], e.target.value]);
+                    }}
                 />
+                <button onClick={() => handlePlayClick(playerNames)}>Play 👈</button>
             </div>
         );
-    } else if (showCongratulations) {
-        return (
-            <div>
-                <Felicitaciones playerName={playerName} score={score} />
-            </div>
-        );
+    } else {
+        return <Juego playerNames={playerNames} />;
     }
 }
 

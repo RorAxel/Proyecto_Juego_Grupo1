@@ -1,53 +1,50 @@
 import React, { useState } from 'react';
 import Juego from './Juego';
-import './styles.css';
-import Felicitaciones from './Felicitaciones';
-
 
 function Inicio() {
-    const [playerNames, setPlayerNames] = useState(['Player 1', 'Player 2']);
+    const [playerName1, setPlayerName1] = useState('');
+    const [playerName2, setPlayerName2] = useState('');
     const [showGame, setShowGame] = useState(false);
-    const [score, setScore] = useState(0);
-    const [showCongratulations, setShowCongratulations] = useState(false);
-    const [currentRound, setCurrentRound] = useState(1);
 
-    const handlePlayClick = (names) => {
-        setPlayerNames(names);
-        setShowGame(true);
-        setScore(0);
-        setShowCongratulations(false);
-    };
-
-    const onFinish = (score) => {
-        setScore(score);
-        setShowGame(false);
-        setShowCongratulations(true);
-    };
+    const handleStartGame = () => {
+        if (playerName1 && playerName2) {
+            setShowGame(true);
+        }
+    }
 
     if (!showGame) {
         return (
             <div>
-                <h1>Enter players' names  😎👍</h1>
+                <h1>Enter players' names 😎👍</h1>
                 <input
                     type="text"
                     placeholder="Player 1's Name"
-                    onChange={(e) => {
-                        setPlayerNames([e.target.value, playerNames[1]]);
-                    }}
+                    onChange={(e) => setPlayerName1(e.target.value)}
                 />
                 <input
                     type="text"
                     placeholder="Player 2's Name"
-                    onChange={(e) => {
-                        setPlayerNames([playerNames[0], e.target.value]);
-                    }}
+                    onChange={(e) => setPlayerName2(e.target.value)}
                 />
-                <button onClick={() => handlePlayClick(playerNames)}>Play 👈</button>
+                <button onClick={handleStartGame}>Start Game 👈</button>
             </div>
         );
     } else {
-        return <Juego playerNames={playerNames} />;
+        return (
+            <div>
+                <Juego
+                    playerName1={playerName1}
+                    playerName2={playerName2}
+                    onFinish={(scores) => {
+                        // Aquí puedes manejar la finalización del juego, por ejemplo, mostrar los puntajes.
+                        console.log('Game Over!');
+                        console.log(scores);
+                    }}
+                />
+            </div>
+        );
     }
 }
 
 export default Inicio;
+

@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import './styles.css'; // Importa el archivo CSS
+import './styles.css';
 
-function Juego({ playerName, score, setScore, onFinish, currentRound, setCurrentRound }) {
+function Juego({ playerName1, playerName2, onFinish }) {
     const [targetAnimal, setTargetAnimal] = useState('');
     const [options, setOptions] = useState([]);
-    const [isCorrect, setIsCorrect] = useState(null);
-    const [totalRounds, setTotalRounds] = useState(Math.floor(Math.random() * 6) + 5);
-    const [canClick, setCanClick] = useState(true);
+    const [scores, setScores] = useState({ [playerName1]: 0, [playerName2]: 0 });
+    const [currentPlayer, setCurrentPlayer] = useState(playerName1);
+    const [currentRound, setCurrentRound] = useState(1);
+    const [totalRounds] = useState(10);
+    const [gameOver, setGameOver] = useState(false);
 
     const getRandomAnimal = () => {
         const animals = ['cat', 'dog', 'cow', 'lion', 'giraffe', 'zebra'];
         const randomIndex = Math.floor(Math.random() * animals.length);
         return animals[randomIndex];
     };
-    
+
     const getRandomOptions = () => {
         const correctAnimal = getRandomAnimal();
         let randomOptions = [correctAnimal];
@@ -32,35 +34,41 @@ function Juego({ playerName, score, setScore, onFinish, currentRound, setCurrent
     };
 
     const checkAnswer = (selectedAnimal) => {
-        if (selectedAnimal === targetAnimal) {
-            setIsCorrect(true);
-            setScore(score + 1);
-        } else {
-            setIsCorrect(false);
+        if (!gameOver) { // Comprobar si el juego está en curso
+            if (selectedAnimal === targetAnimal) {
+                const updatedScores = { ...scores };
+                updatedScores[currentPlayer] += 1;
+                setScores(updatedScores);
+            }
+    
+            if (currentRound === totalRounds) {
+                setGameOver(true);
+            } else {
+                nextRound();
+            }
         }
-        setCanClick(false);
     };
-
+    
     const nextRound = () => {
-        if (currentRound < totalRounds) {
-            setCurrentRound(currentRound + 1);
-            setIsCorrect(null);
-            setCanClick(true);
-            getRandomOptions();
-        } else {
-            onFinish(score);
-        }
+        const nextPlayer = currentPlayer === playerName1 ? playerName2 : playerName1;
+        setCurrentRound(currentRound + 1);
+        setCurrentPlayer(nextPlayer);
+        getRandomOptions();
     };
-
-    const disabledOptions = isCorrect !== null;
 
     useEffect(() => {
         getRandomOptions();
     }, []);
 
+    useEffect(() => {
+        if (gameOver) {
+            onFinish(scores);
+        }
+    }, [gameOver, onFinish, scores]);
+
     return (
         <div>
-            <h1>{playerName},🤔What is this animal? 👀 </h1>
+            <h1>{currentPlayer}, 🤔What is this animal? 👀</h1>
             <p>Current round: {currentRound}</p>
             <img src={`img/${targetAnimal}.png`} alt={targetAnimal} />
             <div>
@@ -68,15 +76,20 @@ function Juego({ playerName, score, setScore, onFinish, currentRound, setCurrent
                     <button
                         key={animal}
                         onClick={() => checkAnswer(animal)}
-                        disabled={!canClick || disabledOptions}
                     >
                         {animal}
                     </button>
                 ))}
             </div>
-            {isCorrect === true && <p>Correct!</p>}
-            {isCorrect === false && <p>Incorrect!</p>}
-            <button onClick={nextRound}>👉Next👈</button>
+            <p>{playerName1}'s Score: {scores[playerName1]}</p>
+            <p>{playerName2}'s Score: {scores[playerName2]}</p>
+            {gameOver && (
+                <div>
+                    <h1>🎉Congratulations 🎊🥳</h1>
+                    <p>{playerName1}'s Score: {scores[playerName1]}</p>
+                    <p>{playerName2}'s Score: {scores[playerName2]}</p>
+                </div>
+            )}
         </div>
     );
 }

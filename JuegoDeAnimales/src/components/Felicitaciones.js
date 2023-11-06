@@ -1,4 +1,4 @@
-import React from 'react';
+/*import React from 'react';
 import './styles.css'; // Importa el archivo CSS
 
 function Felicitaciones({ playerName, score }) {
@@ -10,4 +10,4 @@ function Felicitaciones({ playerName, score }) {
     );
 }
 
-export default Felicitaciones;
+export default Felicitaciones; */

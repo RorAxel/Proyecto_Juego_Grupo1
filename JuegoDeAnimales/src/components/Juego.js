@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import './styles.css';
+import animalsP from '../Data/animals.json';
 
 function Juego({ playerName1, playerName2, onFinish }) {
-    const [targetAnimal, setTargetAnimal] = useState('');
+   
+    
+    const [targetAnimal, setTargetAnimal] = useState('')
     const [options, setOptions] = useState([]);
     const [scores, setScores] = useState({ [playerName1]: 0, [playerName2]: 0 });
     const [currentPlayer, setCurrentPlayer] = useState(playerName1);
     const [currentRound, setCurrentRound] = useState(1);
-    const [totalRounds] = useState(10);
+    const [totalRounds] = useState(Math.floor(Math.random() * 6) + 8); // Número total de rondas aleatorio entre 8 y 10
     const [gameOver, setGameOver] = useState(false);
+    
 
     const getRandomAnimal = () => {
-        const animals = ['cat', 'dog', 'cow', 'lion', 'giraffe', 'zebra'];
+        
+        const animals = animalsP.animals; // se agrega quee la constante animals tiene como valor animals.json
         const randomIndex = Math.floor(Math.random() * animals.length);
         return animals[randomIndex];
     };
@@ -65,7 +70,7 @@ function Juego({ playerName1, playerName2, onFinish }) {
             onFinish(scores);
         }
     }, [gameOver, onFinish, scores]);
-
+    
     return (
         <div>
             <h1>{currentPlayer}, 🤔What is this animal? 👀</h1>
@@ -88,6 +93,7 @@ function Juego({ playerName1, playerName2, onFinish }) {
                     <h1>🎉Congratulations 🎊🥳</h1>
                     <p>{playerName1}'s Score: {scores[playerName1]}</p>
                     <p>{playerName2}'s Score: {scores[playerName2]}</p>
+                   
                 </div>
             )}
         </div>

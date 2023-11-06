@@ -8,28 +8,18 @@ function Juego({ playerName, score, setScore, onFinish, currentRound, setCurrent
     const [totalRounds, setTotalRounds] = useState(Math.floor(Math.random() * 6) + 5);
     const [canClick, setCanClick] = useState(true);
 
-    useEffect(() => {
-        // Carga los datos de los animales desde el archivo JSON
-        fetch('Data/animals.json')
-            .then((response) => response.json())
-            .then((data) => {
-                const animals = data.animals;
-                getRandomOptions(animals);
-            })
-            .catch((error) => console.error('Error loading animals:', error));
-    }, []);
-
-    const getRandomAnimal = (animals) => {
+    const getRandomAnimal = () => {
+        const animals = ['cat', 'dog', 'cow', 'lion', 'giraffe', 'zebra'];
         const randomIndex = Math.floor(Math.random() * animals.length);
         return animals[randomIndex];
     };
     
-    const getRandomOptions = (animals) => {
-        const correctAnimal = getRandomAnimal(animals);
+    const getRandomOptions = () => {
+        const correctAnimal = getRandomAnimal();
         let randomOptions = [correctAnimal];
 
         while (randomOptions.length < 3) {
-            const option = getRandomAnimal(animals);
+            const option = getRandomAnimal();
             if (!randomOptions.includes(option)) {
                 randomOptions.push(option);
             }
@@ -63,6 +53,10 @@ function Juego({ playerName, score, setScore, onFinish, currentRound, setCurrent
     };
 
     const disabledOptions = isCorrect !== null;
+
+    useEffect(() => {
+        getRandomOptions();
+    }, []);
 
     return (
         <div>

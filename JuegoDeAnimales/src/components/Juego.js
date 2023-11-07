@@ -3,8 +3,6 @@ import './styles.css';
 import animalsP from '../Data/animals.json';
 
 function Juego({ playerName1, playerName2, onFinish }) {
-   
-    
     const [targetAnimal, setTargetAnimal] = useState('')
     const [options, setOptions] = useState([]);
     const [scores, setScores] = useState({ [playerName1]: 0, [playerName2]: 0 });
@@ -12,10 +10,9 @@ function Juego({ playerName1, playerName2, onFinish }) {
     const [currentRound, setCurrentRound] = useState(1);
     const [totalRounds] = useState(Math.floor(Math.random() * 6) + 8); // Número total de rondas aleatorio entre 8 y 10
     const [gameOver, setGameOver] = useState(false);
-    
+    const [winner, setWinner] = useState('');
 
     const getRandomAnimal = () => {
-        
         const animals = animalsP.animals; // se agrega quee la constante animals tiene como valor animals.json
         const randomIndex = Math.floor(Math.random() * animals.length);
         return animals[randomIndex];
@@ -70,7 +67,18 @@ function Juego({ playerName1, playerName2, onFinish }) {
             onFinish(scores);
         }
     }, [gameOver, onFinish, scores]);
-    
+    /** Este use effect decide que sse mostrara al final segun el puntaje de los jugadores */
+    useEffect(() => {
+        if (scores[playerName1] > scores[playerName2]) { 
+            setWinner('The Winner of this march is ' + [playerName1]);
+        } if (scores[playerName1] < scores[playerName2]) {
+            setWinner('The Winner of this march is ' + [playerName2]);
+        } if (scores[playerName1] == scores[playerName2]) {// si es un empate
+            setWinner('it is a draw');
+        }
+        
+    }, [winner, scores]);
+
     return (
         <div>
             <h1>{currentPlayer}, 🤔What is this animal? 👀</h1>
@@ -91,9 +99,9 @@ function Juego({ playerName1, playerName2, onFinish }) {
             {gameOver && (
                 <div>
                     <h1>🎉Congratulations 🎊🥳</h1>
+                    <p> {winner}</p>
                     <p>{playerName1}'s Score: {scores[playerName1]}</p>
                     <p>{playerName2}'s Score: {scores[playerName2]}</p>
-                   
                 </div>
             )}
         </div>
@@ -101,3 +109,4 @@ function Juego({ playerName1, playerName2, onFinish }) {
 }
 
 export default Juego;
+

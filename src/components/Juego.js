@@ -10,7 +10,7 @@ function Juego({ playerName1, playerName2, onFinish }) {
     const [currentRound, setCurrentRound] = useState(1);
     const [totalRounds] = useState(10);
     const [gameOver, setGameOver] = useState(false);
-    const [winner, setWinner] = useState('')
+    const [winner, setWinner] = useState('');
 
    // ['cat', 'dog', 'cow', 'lion', 'giraffe', 'zebra'];
 
@@ -71,16 +71,17 @@ function Juego({ playerName1, playerName2, onFinish }) {
     }, [gameOver, onFinish, scores]);
 
     
-
+    /** Este use effect decide que sse mostrara al final segun el puntaje de los jugadores */
     useEffect(() => {
-        if (scores[playerName1] > scores[playerName2]) {
-            setWinner('The winner of this match is {playerName1} with a score of {scores[playerName1]}');
+        if (scores[playerName1] > scores[playerName2]) { 
+            setWinner('The Winner of this march is ' + [playerName1]);
         } if (scores[playerName1] < scores[playerName2]) {
-            setWinner('The winner of this match is {playerName1} with a score of {scores[playerName1]}');
-        } else {
+            setWinner('The Winner of this march is ' + [playerName2]);
+        } if (scores[playerName1] == scores[playerName2]) {// si es un empate
             setWinner('it is a draw');
         }
-    }, [scores]);
+        
+    }, [winner, scores]);
 
     return (
         <div>
@@ -102,7 +103,7 @@ function Juego({ playerName1, playerName2, onFinish }) {
             {gameOver && (
                 <div>
                     <h1>🎉Congratulations 🎊🥳</h1>
-                    <p>The Winner is {winner}</p>
+                    <p> {winner}</p>
                     <p>{playerName1}'s Score: {scores[playerName1]}</p>
                     <p>{playerName2}'s Score: {scores[playerName2]}</p>
                 </div>
